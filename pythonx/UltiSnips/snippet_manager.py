@@ -48,8 +48,14 @@ def _ask_user(a, formatted):
 def _ask_snippets(snippets):
     """Given a list of snippets, ask the user which one they want to use, and
     return it."""
-    display = [as_unicode('%i: %s (%s)') % (i + 1, escape(s.description, '\\'),
-                                            escape(s.location, '\\')) for i, s in enumerate(snippets)]
+    if _vim.eval("exists('g:UltiSnipsListFormat')") == '1':
+        list_format = _vim.eval('g:UltiSnipsListFormat')
+    else:
+        list_format = "{id}: {description} ({location})"
+    display = [as_unicode(list_format).format(
+        id=i + 1,
+        description=escape(s.description, '\\'),
+        location=escape(s.location, '\\')) for i, s in enumerate(snippets)]
     return _ask_user(snippets, display)
 
 
